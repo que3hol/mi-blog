@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Blog Real</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f4f4;
+    }
+    header {
+      background: #0d6efd;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+    form {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #0d6efd;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .post {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.05);
+    }
+    .post h3 {
+      margin: 0 0 5px 0;
+    }
+    .post .date {
+      color: #777;
+      font-size: 0.9em;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Mi Blog Real</h1>
+  <p>Escribe tus ideas y se guardarán en tu navegador</p>
+</header>
+
+<div class="container">
+  <form id="blogForm">
+    <input type="text" id="titulo" placeholder="Título del post" required>
+    <textarea id="contenido" placeholder="Escribe tu entrada aquí..." rows="5" required></textarea>
+    <button type="submit">Publicar</button>
+  </form>
+
+  <div id="posts"></div>
+</div>
+
+<script>
+  const form = document.getElementById('blogForm');
+  const postsContainer = document.getElementById('posts');
+
+  let posts = JSON.parse(localStorage.getItem('posts')) || [];
+
+  function mostrarPosts() {
+    postsContainer.innerHTML = '';
+    posts.slice().reverse().forEach(post => {
+      const div = document.createElement('div');
+      div.className = 'post';
+      div.innerHTML = `
+        <h3>${post.titulo}</h3>
+        <div class="date">${post.fecha}</div>
+        <p>${post.contenido}</p>
+      `;
+      postsContainer.appendChild(div);
+    });
+  }
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const titulo = document.getElementById('titulo').value.trim();
+    const contenido = document.getElementById('contenido').value.trim();
+    if (!titulo || !contenido) return;
+
+    const fecha = new Date().toLocaleDateString();
+    const nuevoPost = { titulo, contenido, fecha };
+    posts.push(nuevoPost);
+    localStorage.setItem('posts', JSON.stringify(posts));
+    form.reset();
+    mostrarPosts();
+  });
+
+  mostrarPosts();
+</script>
+
+</body>
+</html>
